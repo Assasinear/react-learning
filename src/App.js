@@ -1,24 +1,47 @@
-import {useState} from 'react';
-import Post1 from "./Post 1";
-import NavigationBar from "./NavigationBar";
-import Post2 from "./Post 2";
-import Post3 from "./Post 3";
+import {useEffect, useState} from 'react';
+import axios from "axios";
+import Posts from "./components/Posts";
+import Pagination from "./components/Pagination";
 
 function App() {
-    const [currentPage, setCurrentPage] = useState('Post1');
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10)
+
+    useEffect(() => {
+        const getPosts = async () => {
+            setLoading(true)
+            const res = await axios.get('https://jsonplaceholder.typicode.com/posts')
+            setPosts(res.data)
+            setLoading(false)
+        }
+        getPosts()
+
+    }, []);
 
     const handleNavigation = (page) => {
         setCurrentPage(page);
     }
 
+    const lastPostIndex = currentPage * postsPerPage
+    const firstPostIndex = lastPostIndex - postsPerPage
+    const currentPost = posts.slice(firstPostIndex, lastPostIndex)
+
+    const paginate = pageNumber => setCurrentPage(pageNumber)
+
     return (
         <div>
-            <NavigationBar onNavigate={handleNavigation}/>
-            {currentPage === 'Post 1' && <Post1/>}
-            {currentPage === 'Post 2' && <Post2/>}
-            {currentPage === 'Post 3' && <Post3/>}
+            <h1>Posts</h1>
+            <Posts posts={currentPost} loading={loading}/>
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={posts.length}
+                paginate={paginate}
+            />
         </div>
     );
 }
+
 
 export default App;
