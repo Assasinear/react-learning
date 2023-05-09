@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import axios from "axios";
 import Posts from "./components/Posts";
 import Pagination from "./components/Pagination";
 
@@ -10,10 +9,12 @@ function App() {
     const [postsPerPage] = useState(10)
 
     useEffect(() => {
-        const getPosts = async () => {
+        const getPosts = () => {
             setLoading(true)
-            const res = await axios.get('https://jsonplaceholder.typicode.com/posts')
-            setPosts(res.data)
+            fetch("https://jsonplaceholder.typicode.com/posts")
+                .then((response) => response.json())
+                .then((data) => setPosts(data))
+                .catch((error) => console.error(error));
             setLoading(false)
         }
         getPosts()

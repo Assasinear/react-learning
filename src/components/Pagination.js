@@ -12,7 +12,7 @@ const Pagination = ({postsPerPage, totalPosts, paginate}) => {
                 {
                     pageNumbers.map(number => (
                         <p key={number}>
-                            <a href='' onClick={() => paginate(number)}>
+                            <a href='!#' onClick={() => paginate(number)}>
                                 {
                                     number
                                 }
